@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  body {
+    @apply font-sans;
+    color: #1D2731;
+    background-color: #FFFFFF;
+  }
+
+  /* Universal visible focus ring for keyboard accessibility */
+  :focus-visible {
+    outline: 2px solid #118379 !important;
+    outline-offset: 3px !important;
+    border-radius: 4px;
+  }
+
+  /* Tabular numbers for financial metrics and currency values */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Exactly height 100vh/100svh, sticky at top:0, offset by navbar (56px) + StoryNav (58px) = 114px */
+  .pinned-scene {
+    position: relative;
+  }
+  @media (min-width: 768px) {
+    .pinned-scene {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 114px;
+      overflow: clip;
+    }
+  }
+}
+
+/* Reduced motion accessibility rule */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

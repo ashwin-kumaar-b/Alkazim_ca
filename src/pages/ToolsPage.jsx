@@ -1,124 +1,142 @@
-import React, { useState } from 'react'
-import { standaloneTools } from '../data/products'
-import { POExtractorDemo } from '../components/demos/POExtractorDemo'
-import { ReconciliationDemo } from '../components/demos/ReconciliationDemo'
-import { Badge } from '../components/ui/Badge'
-import { Button } from '../components/ui/Button'
+import React, { useState, useMemo } from 'react'
+import { Container, Section } from '../components/ui/Container'
+import { ReconciliationWorkbench } from '../components/demos/ReconciliationWorkbench'
+import { TOOL_CATEGORIES, toolsCatalog } from '../data/toolsCatalogData'
 
 export function ToolsPage() {
-  const [activeDemo, setActiveDemo] = useState('po')
+  const [selectedCategory, setSelectedCategory] = useState('All')
+
+  const filteredTools = useMemo(() => {
+    if (selectedCategory === 'All') return toolsCatalog
+    return toolsCatalog.filter((t) => t.category === selectedCategory)
+  }, [selectedCategory])
 
   return (
-    <div className="py-12 lg:py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="max-w-3xl mb-12">
-          <Badge variant="green" size="sm" className="mb-3">
-            Product Category 2
-          </Badge>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-brand-navy tracking-tight">
-            Standalone Financial Tools
+    <div className="bg-white">
+      {/* Header */}
+      <Section spacing="sm" className="bg-calm-teal border-b border-teal-100">
+        <Container size="lg" className="text-center space-y-3">
+          <span className="text-label text-teal">Modular Capabilities</span>
+          <h1 className="text-display font-display text-navy tracking-tight">
+            Standalone Tools
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-brand-navy-light leading-relaxed">
-            Laser-focused tools that tackle one discrete financial pain point. Use them individually, plug them into your existing spreadsheets, or integrate directly with your ERP.
+          <p className="text-body-lg text-navy-400 max-w-2xl mx-auto">
+            Targeted precision tools that solve one specific financial bottleneck.
+            Deploy individually into your current spreadsheet and ERP workflow.
           </p>
-        </div>
+        </Container>
+      </Section>
 
-        {/* Live Interactive Sandbox Switcher */}
-        <div className="mb-16">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-6 border-b border-surface-border gap-4">
+      <Container size="xl" className="py-16 sm:py-24 space-y-20">
+        {/* Interactive Reconciliation Demo Reused from Chapter 4 */}
+        <section className="space-y-6">
+          <div className="border-b border-slate-100 pb-4">
+            <span className="text-label text-teal">Live Workbench Demo</span>
+            <h2 className="text-h2 font-display text-navy mt-1">
+              General Ledger & Bank Feed Reconciliation
+            </h2>
+            <p className="text-small text-navy-400 mt-1 max-w-xl">
+              Experience the matching engine in real-time. Click any flagged row to open the audit exception panel and review the source discrepancy.
+            </p>
+          </div>
+
+          <ReconciliationWorkbench />
+        </section>
+
+        {/* Filterable Tools Catalog Section */}
+        <section className="space-y-8 pt-8 border-t border-slate-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold font-display text-brand-navy">
-                Interactive Tool Workbench
+              <h2 className="text-h2 font-display text-navy">
+                Standalone Tool Directory
               </h2>
-              <p className="text-xs text-brand-navy-light">
-                Switch between live interactive modules to inspect extraction and reconciliation logic.
+              <p className="text-small text-navy-400 mt-0.5">
+                Filter by workflow capability ({filteredTools.length} tools available)
               </p>
             </div>
-            <div className="inline-flex p-1 rounded-lg bg-surface-muted border border-surface-border">
-              <button
-                type="button"
-                onClick={() => setActiveDemo('po')}
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:outline-none ${
-                  activeDemo === 'po'
-                    ? 'bg-white text-brand-navy shadow-sm'
-                    : 'text-brand-navy-subtle hover:text-brand-navy'
-                }`}
-              >
-                PO & Invoice Extractor
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveDemo('reconcile')}
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:outline-none ${
-                  activeDemo === 'reconcile'
-                    ? 'bg-white text-brand-navy shadow-sm'
-                    : 'text-brand-navy-subtle hover:text-brand-navy'
-                }`}
-              >
-                Ledger Reconciliation
-              </button>
+
+            {/* Category Filter Tabs */}
+            <div
+              role="tablist"
+              aria-label="Filter tools by category"
+              className="inline-flex p-1 rounded-xl bg-calm-subtle border border-slate-200"
+            >
+              {TOOL_CATEGORIES.map((cat, idx) => (
+                <button
+                  key={cat}
+                  role="tab"
+                  type="button"
+                  aria-selected={selectedCategory === cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowRight' && idx < TOOL_CATEGORIES.length - 1) {
+                      e.preventDefault()
+                      setSelectedCategory(TOOL_CATEGORIES[idx + 1])
+                    } else if (e.key === 'ArrowLeft' && idx > 0) {
+                      e.preventDefault()
+                      setSelectedCategory(TOOL_CATEGORIES[idx - 1])
+                    }
+                  }}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all min-h-[36px] sm:min-h-0 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal ${
+                    selectedCategory === cat
+                      ? 'bg-white text-navy shadow-xs font-bold'
+                      : 'text-navy-400 hover:text-navy'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
 
-          {activeDemo === 'po' ? <POExtractorDemo /> : <ReconciliationDemo />}
-        </div>
-
-        {/* Catalog of all 6 Standalone Tools */}
-        <div className="pt-8 border-t border-surface-border">
-          <h2 className="text-2xl font-bold font-display text-brand-navy mb-8">
-            Complete Standalone Tool Directory
-          </h2>
+          {/* Filtered Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {standaloneTools.map((tool) => (
+            {filteredTools.map((tool) => (
               <div
                 key={tool.id}
-                id={tool.id}
-                className="bg-white rounded-xl border border-surface-border p-6 shadow-subtle hover:shadow-card transition-shadow flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:shadow-card transition-shadow flex flex-col justify-between space-y-4"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <Badge variant={tool.status === 'In Production' ? 'teal' : 'amber'} size="sm">
+                    <span className="px-2 py-0.5 rounded-full bg-calm-teal text-teal-800 text-[10px] font-mono font-semibold border border-teal-100">
+                      {tool.category}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full font-mono text-[10px] font-semibold ${
+                        tool.status === 'Live'
+                          ? 'bg-green-100 text-green-700 border border-green-200'
+                          : 'bg-amber-100 text-amber-800 border border-amber-200'
+                      }`}
+                    >
                       {tool.status}
-                    </Badge>
-                    <span className="text-[10px] font-mono uppercase text-brand-navy-muted">
-                      {tool.capability}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold font-display text-brand-navy mb-2">
+
+                  <h3 className="text-small font-bold text-navy font-display">
                     {tool.title}
                   </h3>
-                  <p className="text-sm text-brand-navy-light leading-relaxed mb-4">
-                    {tool.summary}
+                  <p className="text-xs text-navy-400 leading-relaxed mt-2">
+                    {tool.description}
                   </p>
-                  <div className="p-3 rounded-lg bg-surface-subtle border border-surface-border text-xs">
-                    <span className="text-[10px] text-brand-navy-muted uppercase font-mono block">
-                      Accepted Inputs
-                    </span>
-                    <span className="text-brand-navy font-medium mt-0.5 block truncate">
-                      {tool.inputFormats}
-                    </span>
-                  </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-surface-border flex items-center justify-between">
-                  <span className="text-xs font-mono text-brand-teal">Zero Configuration</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveDemo(tool.id === 'reconciliation' ? 'reconcile' : 'po')
-                      window.scrollTo({ top: 400, behavior: 'smooth' })
-                    }}
-                    className="text-xs font-semibold text-brand-navy hover:text-brand-teal transition-colors focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:outline-none rounded px-1"
-                  >
-                    Open in Workbench ↑
-                  </button>
+                <div className="space-y-2 pt-3 border-t border-slate-100 text-[11px] font-mono">
+                  <div className="flex justify-between text-navy-400">
+                    <span>Inputs:</span>
+                    <span className="text-navy font-medium truncate max-w-[170px]">{tool.inputs}</span>
+                  </div>
+                  <div className="flex justify-between text-teal">
+                    <span>Capability:</span>
+                    <span className="font-medium truncate max-w-[170px]">{tool.capability}</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
+      </Container>
     </div>
   )
 }
+
+export default ToolsPage

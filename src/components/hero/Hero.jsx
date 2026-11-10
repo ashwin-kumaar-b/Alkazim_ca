@@ -1,78 +1,116 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { Button } from '../ui/Button'
-import { Badge } from '../ui/Badge'
-import { HeroAnimation } from './HeroAnimation'
+import { Container } from '../ui/Container'
+import { HeroVisual } from './HeroVisual'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { useSmoothScroll } from '../../context/SmoothScrollContext'
 
 export function Hero() {
-  return (
-    <section className="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 bg-gradient-to-b from-white via-surface-subtle/50 to-white">
-      {/* Background subtle accent circles */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-brand-green/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-20 right-10 w-80 h-80 bg-brand-teal/5 rounded-full blur-3xl pointer-events-none" />
+  const shouldReduceMotion = useReducedMotion()
+  const smoothScroll = useSmoothScroll()
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Column: Core Value Proposition */}
-          <div className="lg:col-span-6 space-y-6 text-left">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="teal" size="sm">
-                Spun out of Alkazim • Dubai
-              </Badge>
-              <Badge variant="neutral" size="sm">
-                GCC Audit & Accounting Focus
-              </Badge>
+  const scrollToStory = (e) => {
+    e.preventDefault()
+    if (smoothScroll?.scrollToTarget) {
+      smoothScroll.scrollToTarget('#chapter-1')
+    } else {
+      document.getElementById('chapter-1')?.scrollIntoView({ behavior: 'auto' })
+    }
+  }
+
+  return (
+    <section className="relative min-h-[calc(100vh-5rem)] flex flex-col justify-between pt-12 pb-8 sm:pt-16 sm:pb-12 bg-white overflow-hidden">
+      <Container size="xl" className="my-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          {/* Left Column: Messaging & CTAs */}
+          <div className="lg:col-span-7 space-y-6 text-left">
+            {/* Context Pill */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-pill bg-calm-teal border border-teal-100 text-xs text-teal-700 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-green" />
+              <span>Spun out of Alkazim · Dubai, UAE</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display text-brand-navy tracking-tight leading-[1.15]">
-              The software prepares the work.{' '}
-              <span className="text-brand-teal block sm:inline">
-                The professional reviews and decides.
-              </span>
+            {/* Main Headline */}
+            <h1 className="text-display font-display text-navy tracking-tight">
+              The prep work, done.
+              <br />
+              <span className="text-teal">The sign-off, yours.</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-brand-navy-light leading-relaxed">
-              Much of a finance team's day is lost to manual voucher checking, extraction, and draft schedules. 
-              Endloops automates repetitive financial tasks from start to finish, while keeping final sign-off with people.
+            {/* Subhead */}
+            <p className="text-body-lg sm:text-h3 text-navy-400 font-normal max-w-2xl leading-relaxed">
+              Endloops automates the repetitive work of accounting, audit and property finance, so your team spends its time on judgement, not data entry.
             </p>
 
-            {/* CTAs */}
+            {/* Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-              <Link to="/contact">
-                <Button variant="accent" size="lg" className="w-full sm:w-auto shadow-sm">
-                  Request a Practice Demo
-                </Button>
-              </Link>
-              <a href="#how-it-works">
-                <Button variant="secondary" size="lg" className="w-full sm:w-auto">
-                  See How It Works
-                </Button>
-              </a>
+              <Button as={Link} to="/contact" variant="primary" size="lg">
+                Request a demo
+              </Button>
+              <Button
+                as="a"
+                href="#chapter-1"
+                onClick={scrollToStory}
+                variant="secondary"
+                size="lg"
+              >
+                Follow a day with Endloops
+              </Button>
             </div>
 
-            {/* Trust Points */}
-            <div className="pt-4 border-t border-surface-border grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-brand-navy-subtle">
-              <div>
-                <span className="font-semibold text-brand-navy block text-sm">IFRS & GCC Ready</span>
-                <span>Tailored for regional statutory standards</span>
-              </div>
-              <div>
-                <span className="font-semibold text-brand-navy block text-sm">Full Traceability</span>
-                <span>Every figure links back to source files</span>
-              </div>
-              <div className="col-span-2 sm:col-span-1">
-                <span className="font-semibold text-brand-navy block text-sm">Human-in-Loop</span>
-                <span>Engine drafts, partner approves</span>
-              </div>
+            {/* Core Capability Tag Row */}
+            <div className="pt-6 border-t border-slate-100 flex flex-wrap items-center gap-y-2 gap-x-2.5 text-caption text-navy-600 font-mono">
+              <span>Reads documents</span>
+              <span className="text-navy-300">·</span>
+              <span>Matches against ledgers</span>
+              <span className="text-navy-300">·</span>
+              <span>Flags what's wrong</span>
+              <span className="text-navy-300">·</span>
+              <span>Drafts for your review</span>
             </div>
           </div>
 
-          {/* Right Column: Live Document Pipeline Animation */}
-          <div className="lg:col-span-6 w-full">
-            <HeroAnimation />
+          {/* Right Column: Looping Invoice Card Visual */}
+          <div className="lg:col-span-5 w-full flex items-center justify-center">
+            <HeroVisual />
           </div>
         </div>
+      </Container>
+
+      {/* Subtle Scroll Cue at the Bottom */}
+      <div className="w-full pt-8 pb-2 text-center">
+        <a
+          href="#chapter-1"
+          onClick={scrollToStory}
+          className="inline-flex flex-col items-center gap-1.5 text-navy-400 hover:text-teal transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal rounded-pill p-1"
+          aria-label="Scroll to Chapter 1"
+        >
+          <span className="text-caption font-mono uppercase tracking-widest text-navy-300 group-hover:text-teal transition-colors">
+            Scroll to follow a day with Endloops
+          </span>
+          <motion.div
+            animate={shouldReduceMotion ? false : { y: [0, 4, 0] }}
+            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+          >
+            <svg
+              className="w-4 h-4 text-navy-300 group-hover:text-teal transition-colors"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </motion.div>
+        </a>
       </div>
     </section>
   )
 }
+
+export default Hero

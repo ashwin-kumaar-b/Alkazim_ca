@@ -1,84 +1,192 @@
 import React from 'react'
-import { ContactForm } from '../components/contact/ContactForm'
-import { Badge } from '../components/ui/Badge'
+import { AnimatePresence } from 'framer-motion'
+import { Container, Section } from '../components/ui/Container'
+import { Button } from '../components/ui/Button'
+import { useContactForm } from '../hooks/useContactForm'
+import { ContactSuccessCard } from '../components/contact/ContactSuccessCard'
+import { ContactDetails } from '../components/contact/ContactDetails'
 
 export function ContactPage() {
+  const {
+    formData,
+    errors,
+    isSubmitted,
+    roles,
+    onBlur,
+    onChange,
+    onSubmit,
+    onReset,
+  } = useContactForm()
+
   return (
-    <div className="py-12 lg:py-20 bg-surface-subtle">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-white">
+      {/* Header */}
+      <Section spacing="sm" className="bg-calm-teal border-b border-teal-100">
+        <Container size="lg" className="text-center space-y-3">
+          <span className="text-label text-teal">Practice Consultation</span>
+          <h1 className="text-display font-display text-navy tracking-tight">
+            Request a Practice Walkthrough
+          </h1>
+          <p className="text-body-lg text-navy-400 max-w-xl mx-auto">
+            Discuss your firm's vouching, escrow audit, or reconciliation workflows with our Dubai engineering team.
+          </p>
+        </Container>
+      </Section>
+
+      <Container size="xl" className="py-16 sm:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Direct Practice Consultation info (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            <Badge variant="teal" size="sm">
-              Direct Practice Inquiries
-            </Badge>
-            <h1 className="text-3xl sm:text-4xl font-bold font-display text-brand-navy tracking-tight">
-              Let's discuss how Endloops fits your firm.
-            </h1>
-            <p className="text-sm sm:text-base text-brand-navy-light leading-relaxed">
-              Whether you are an external audit practice looking to automate vouching, an internal finance team preparing quarterly budgets, or a property management firm handling escrow disbursements, our team is ready to walk you through our tools.
-            </p>
-
-            <div className="space-y-4 pt-4 border-t border-surface-border">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white border border-surface-border flex items-center justify-center text-brand-teal flex-shrink-0">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-navy">
-                    Dubai Operations
-                  </h2>
-                  <p className="text-xs text-brand-navy-light mt-0.5">
-                    Alkazim Technology Division / Endloops Technologies<br />
-                    Dubai, United Arab Emirates
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white border border-surface-border flex items-center justify-center text-brand-teal flex-shrink-0">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-navy">
-                    Technical & Partner Inquiries
-                  </h2>
-                  <p className="text-xs text-brand-navy-light mt-0.5">
-                    partner-inquiries@endloops.ae<br />
-                    Response window: Under 24 hours (GST)
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white border border-surface-border flex items-center justify-center text-brand-green flex-shrink-0">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-brand-navy">
-                    Data Security & NDA
-                  </h2>
-                  <p className="text-xs text-brand-navy-light mt-0.5">
-                    We treat all practice consultations with strict client confidentiality and standard non-disclosure terms.
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Left Column: Office & Trust Details */}
+          <div className="lg:col-span-5">
+            <ContactDetails />
           </div>
 
-          {/* Right Column: Interactive Form with Validation (7 cols) */}
+          {/* Right Column: Interactive Form or Success State */}
           <div className="lg:col-span-7">
-            <ContactForm />
+            <AnimatePresence mode="wait">
+              {isSubmitted ? (
+                <ContactSuccessCard
+                  key="success-card"
+                  formData={formData}
+                  onReset={onReset}
+                />
+              ) : (
+                <form
+                  onSubmit={onSubmit}
+                  noValidate
+                  className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-card space-y-4 text-left"
+                >
+                  {/* Name */}
+                  <div>
+                    <label htmlFor="contact-name" className="block text-xs font-semibold text-navy mb-1">
+                      Full Name <span className="text-amber-700">*</span>
+                    </label>
+                    <input
+                      id="contact-name"
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => onChange('name', e.target.value)}
+                      onBlur={() => onBlur('name')}
+                      aria-invalid={Boolean(errors.name)}
+                      aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                      placeholder="e.g. Tariq Al-Hashimi"
+                      className={`w-full px-3.5 py-2 text-small rounded-xl border bg-calm-subtle focus:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal ${
+                        errors.name ? 'border-amber-400 ring-1 ring-amber-300' : 'border-slate-200'
+                      }`}
+                    />
+                    {errors.name && (
+                      <p id="contact-name-error" role="alert" className="text-[11px] text-amber-800 mt-1">
+                        {errors.name}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Email & Company */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="contact-email" className="block text-xs font-semibold text-navy mb-1">
+                        Work Email <span className="text-amber-700">*</span>
+                      </label>
+                      <input
+                        id="contact-email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => onChange('email', e.target.value)}
+                        onBlur={() => onBlur('email')}
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                        placeholder="tariq@auditfirm.ae"
+                        className={`w-full px-3.5 py-2 text-small rounded-xl border bg-calm-subtle focus:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal ${
+                          errors.email ? 'border-amber-400 ring-1 ring-amber-300' : 'border-slate-200'
+                        }`}
+                      />
+                      {errors.email && (
+                        <p id="contact-email-error" role="alert" className="text-[11px] text-amber-800 mt-1">
+                          {errors.email}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label htmlFor="contact-company" className="block text-xs font-semibold text-navy mb-1">
+                        Company / Firm <span className="text-amber-700">*</span>
+                      </label>
+                      <input
+                        id="contact-company"
+                        type="text"
+                        value={formData.company}
+                        onChange={(e) => onChange('company', e.target.value)}
+                        onBlur={() => onBlur('company')}
+                        aria-invalid={Boolean(errors.company)}
+                        aria-describedby={errors.company ? 'contact-company-error' : undefined}
+                        placeholder="Alkazim Audit & Advisory"
+                        className={`w-full px-3.5 py-2 text-small rounded-xl border bg-calm-subtle focus:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal ${
+                          errors.company ? 'border-amber-400 ring-1 ring-amber-300' : 'border-slate-200'
+                        }`}
+                      />
+                      {errors.company && (
+                        <p id="contact-company-error" role="alert" className="text-[11px] text-amber-800 mt-1">
+                          {errors.company}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Role */}
+                  <div>
+                    <label htmlFor="contact-role" className="block text-xs font-semibold text-navy mb-1">
+                      Practice Role
+                    </label>
+                    <select
+                      id="contact-role"
+                      value={formData.role}
+                      onChange={(e) => onChange('role', e.target.value)}
+                      className="w-full px-3.5 py-2 text-small rounded-xl border border-slate-200 bg-calm-subtle focus:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+                    >
+                      {roles.map((r) => (
+                        <option key={r} value={r}>
+                          {r}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label htmlFor="contact-message" className="block text-xs font-semibold text-navy mb-1">
+                      Message / Workflow Need <span className="text-amber-700">*</span>
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      rows={3}
+                      data-lenis-prevent
+                      value={formData.message}
+                      onChange={(e) => onChange('message', e.target.value)}
+                      onBlur={() => onBlur('message')}
+                      aria-invalid={Boolean(errors.message)}
+                      aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                      placeholder="Tell us about your current voucher volume, ERP, or audit paper bottlenecks..."
+                      className={`w-full px-3.5 py-2 text-small rounded-xl border bg-calm-subtle focus:bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal ${
+                        errors.message ? 'border-amber-400 ring-1 ring-amber-300' : 'border-slate-200'
+                      }`}
+                    />
+                    {errors.message && (
+                      <p id="contact-message-error" role="alert" className="text-[11px] text-amber-800 mt-1">
+                        {errors.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <Button type="submit" variant="primary" size="lg" className="w-full justify-center">
+                    Submit Demo Request
+                  </Button>
+                </form>
+              )}
+            </AnimatePresence>
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   )
 }
+
+export default ContactPage

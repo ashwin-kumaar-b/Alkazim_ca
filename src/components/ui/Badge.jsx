@@ -1,32 +1,27 @@
 import React from 'react'
 
-export function Badge({
-  children,
-  variant = 'neutral',
-  size = 'md',
-  className = '',
-  icon,
-}) {
-  const baseStyles = 'inline-flex items-center font-medium rounded-full'
+/** Badge — coloured pill for status/category labels */
+export function Badge({ children, variant = 'neutral', size = 'md', className = '' }) {
+  const base = 'inline-flex items-center gap-1.5 font-medium rounded-pill border'
 
-  const sizeStyles = {
-    sm: 'text-[11px] px-2 py-0.5 gap-1',
-    md: 'text-xs px-2.5 py-1 gap-1.5',
-    lg: 'text-sm px-3 py-1.5 gap-2',
+  const sizes = {
+    sm: 'text-[11px] px-2 py-0.5',
+    md: 'text-xs    px-2.5 py-1',
+    lg: 'text-sm    px-3 py-1.5',
   }
 
-  const variantStyles = {
-    neutral: 'bg-surface-muted text-brand-navy-light border border-surface-border',
-    green: 'bg-brand-green-light text-brand-green-dark border border-brand-green/20',
-    teal: 'bg-brand-teal-light text-brand-teal-dark border border-brand-teal/20',
-    blue: 'bg-brand-blue-light text-brand-blue border border-brand-blue/20',
-    purple: 'bg-brand-purple-light text-brand-purple border border-brand-purple/20',
-    amber: 'bg-amber-50 text-amber-800 border border-amber-200',
+  const variants = {
+    neutral: 'bg-canvas-subtle text-navy-600 border-slate-200',
+    green:   'bg-green-100 text-green-700 border-green-200',
+    teal:    'bg-teal-100  text-teal-700  border-teal-200',
+    blue:    'bg-blue-light text-blue border-blue/20',
+    purple:  'bg-purple-light text-purple border-purple/20',
+    amber:   'bg-amber-light text-amber-700 border-amber-border',
+    red:     'bg-red-50 text-red-700 border-red-200',
   }
 
   return (
-    <span className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}>
-      {icon && <span className="flex-shrink-0">{icon}</span>}
+    <span className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}>
       {children}
     </span>
   )
